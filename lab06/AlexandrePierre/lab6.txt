@@ -1,0 +1,43 @@
+Atividade 1
+
+1. A variável y pode assumir os valores 0, 1 e 2. Não tem como y ser igual a 3.
+  Porque não há interrupções de tempo no meio da atribuição, é uma ação única e
+  caso outra atribuição seja feita para a mesma variável num contexto
+  sequencial ou concorrente a variável assumirá o valor atribuído.
+
+   Os possíveis valores são melhor explicados na resposta do item 4 da
+  Atividade 1.
+
+4. Sim, o valor da variável y depende da ordem em que as operações de atribuição
+  ocorrem nas threads:
+
+  * Se a thread 3 define que y = x antes que as outras threads alterem o valor
+  de inicialização de x, que é 0, então o valor final de y será 0;
+
+  * Se a thread 1 define que x = 1 depois que a thread 2 altera o valor de x ou
+  se a thread 3 define que y = x depois da thread 1 alterar o valor de x e antes
+  que a thread 2 o faça, então o valor final de y será 1;
+
+  * Se a thread 2 define que x = 2 depois que a thread 1 altera o valor de x ou
+  se a thread 3 define que y = x depois da thread 2 alterar o valor de x e antes
+  que a thread 1 o faça, então o valor final de y será 2;
+
+Atividade 2
+
+1. A saída esperada para o programa (valor final de s) é 20000000.
+
+3. Não. Incrementar não é uma ação única, é uma ação que a máquina executa como
+  três ações diferentes que podem ter interrupções de tempo entre elas, ou seja,
+  o incremento pode começar numa thread e antes que termine pode começar e
+  terminar em outra, depois disso o incremento anterior continua sem que a
+  variável global tenha tido seu valor alterado para a thread que foi
+  interrompida no meio da tarefa. Nesse caso, mesmo havendo incremento pelas
+  duas threads, a variável não incrementa em 2 unidades e sim em 1.
+
+Atividade 3
+
+2. Sim.
+
+3. Os valores continuam sendo sempre como esperado.
+
+Atividade 4

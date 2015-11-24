@@ -1,0 +1,50 @@
+Disciplina: Computação Concorrente
+Professora: Silvana Rosseto
+Laboratório 4
+Alexandre de Alencar Moreira Pierre
+
+=======================================================
+Atividade 1
+
+Valores utilizados: 5.1000, 4.2000, 0.7000
+Soma: 10.0000
+
+nthreads = 1
+Saída do programa: 9.99999905
+
+nthreads = 2
+Saída do Programa: 10.00000000
+
+=======================================================
+Atividade 2
+
+nthreads = 2
+
+Arquivo de dados: f1
+Soma sequencial: 49869.44921875
+Soma concorrente: 49869.39453125
+Soma sequencial intercalada: 49869.39453125
+
+Arquivo de dados: f10
+Soma sequencial: 501553.34375000
+Soma concorrente: 501552.93750000
+Soma sequencial intercalada: 501552.93750000
+
+Arquivo de dados: f100
+Soma sequencial: 5006348.00000000
+Soma concorrente: 5006394.00000000
+Soma sequencial intercalada: 5006394.00000000
+
+Arquivo de dados: f1000
+Soma sequencial: 49968956.00000000
+Soma concorrente: 49969192.00000000
+Soma sequencial intercalada: 49969192.00000000
+
+Explicação:
+
+  A máquina tem um limite na quantidade de dígitos que representa e, no caso
+  dos números de ponto flutuante, isso gera erros de truncamento que são
+  propagados com a soma.
+
+  Essa propagação de erros faz com que as propriedades associativa e
+  comutativa da soma de números reais não possam ser garantidas na máquina.

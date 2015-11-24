@@ -1,0 +1,48 @@
+Atividade 1)
+
+2. Em algumas execuções as três threads A imprimiram HELLO antes que a thread B
+  imprimisse BYE BYE.
+
+   Sendo a condição lógica apenas 'a thread B so pode imprimir "ByeBye" depois
+  que duas threads A imprimirem  "Hello"' como comentado no início de
+  hellobye.c, sim, a condição foi seguida. Mas se for considerada a estrutura
+  condicional na função da thread A que destrava a thread B após a thread A
+  escrever HELLO na tela duas vezes, a condição lógica não foi totalmente
+  seguida.
+
+3. x inicia o programa com valor zero; A thread B vai ser travada por x ser
+  menor que 2; A thread A vai ser executada, x vai ser incrementado passando a
+  armazenar 1; A thread A vai terminar; A thread B vai continuar aguardando o
+  sinal para destravar, como não há mais execuções da thread A nem envios de
+  sinal que destravem a thread B, a função principal vai ficar aguardando o fim
+  da execução da thread B para continuar o programa, mas a thread B nunca vai
+  continuar sua execução e consequentemente nunca vai chegar ao fim.
+
+  O programa nunca vai terminar porque a execução da thread B vai ser suspensa
+  e nunca vai continuar consequentemente o programa nunca vai chegar ao fim.
+
+4. Sim, o programa voltou a funcionar. Com 2 threads A o x pode chegar a 2 e a
+  thread B volta a ser destravada, podendo terminar.
+
+5. Possíveis soluções:
+    1 - alterar a condição para o desbloqueio (de x==2 para x>=2) e garantir a
+      execução de threads A o suficiente para desbloquear todas as threads B
+      (uma thread A para cada thread B a partir do momento em que x=2)
+
+    2 - trocar a chamada de pthread_cond_signal(&x_cond) na thread A para
+      pthread_cond_broadcast(&x_cond), fazendo com que todas as threads da fila
+      sejam desbloqueadas e eliminando a necessidade de alterar a condição
+      lógica somente necessitando de threads A o suficiente para que x chegue a
+      2 (duas threads A)
+
+  Estou enviando o código correspondente à segunda solução que apresentei.
+
+Atividade 2)
+
+2. O log sempre o esperado, a thread B sempre escreve BYE BYE e sinaliza a
+  condição antes das threads A sinalizarem o sinal recebido e escreverem HELLO.
+
+  A condição lógica está sendo satisfeita, as threads A só escrevem HELLO depois
+  que a thread B escreve BYE BYE.
+
+Atividade 3)
