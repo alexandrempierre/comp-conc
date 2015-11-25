@@ -1,0 +1,11 @@
+Título de até 72 caracteres:
++ Coisa adicionada
+- Coisa removida
+* Coisa modificada
+# Muita coisa ou coisa grande modificada
+
+Se só o título for o suficiente nada do resto precisa ser colocado
+"Coisa" não diz respeito a arquivo, classe, método, função ou variável 
+e sim funcionalidade (frase/expressão geralmente simples relacionado a algo 
+que o programa faz ou deveria fazer, depende do contexto do programa)
+
