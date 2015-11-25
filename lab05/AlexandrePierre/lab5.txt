@@ -1,0 +1,67 @@
+Aluno: Alexandre de Alencar Moreira Pierre
+Disciplina: Computação Concorrente
+Laboratório 5
+
+---------------------- Observaçoes Iniciais ------------------------
+
+Tempo da Funcao Sequencial/Concorrente, so leva em consideraçao o tempo 
+necessario para calcular a Serie enquanto o Speedup conta inicializaçao, 
+calculo e finalizaçao
+
+---------------------------- Resultados ----------------------------
+
+N = 10³
+Tempo da Funcao Sequencial:             0.000008         
+Tempo da Funcao Concorrente:            0.000263         
+Speedup (Sequencial/Concorrente):       0.259003         
+
+N = 10⁴
+Tempo da Funcao Sequencial:             0.000086         
+Tempo da Funcao Concorrente:            0.000244         
+Speedup (Sequencial/Concorrente):       0.485625
+
+N = 10⁵
+Tempo da Funcao Sequencial:             0.000859
+Tempo da Funcao Concorrente:            0.000646
+Speedup (Sequencial/Concorrente):       1.301079
+
+N = 10⁶
+Tempo da Funcao Sequencial:             0.008585
+Tempo da Funcao Concorrente:            0.004483
+Speedup (Sequencial/Concorrente):       1.901677
+
+N = 10⁷
+Tempo da Funcao Sequencial:             0.085850
+Tempo da Funcao Concorrente:            0.042805
+Speedup (Sequencial/Concorrente):       2.003943
+
+N = 10⁸
+Tempo da Funcao Sequencial:             0.855262
+Tempo da Funcao Concorrente:            0.430789
+Speedup (Sequencial/Concorrente):       1.985181
+
+N = 10⁹
+Tempo da Funcao Sequencial:             8.635079
+Tempo da Funcao Concorrente:            4.288756
+Speedup (Sequencial/Concorrente):       2.013400
+
+N = 10¹⁰
+Tempo da Funcao Sequencial:             12.174548
+Tempo da Funcao Concorrente:            6.038575
+Speedup (Sequencial/Concorrente):       2.016115
+
+------------------ Observações e Conclusoes ------------------
+
+Atividade 1: 
+
+Usando o tipo float, o limite da precisão era alcançado antes que a série 
+fosse executada até o final, fazendo com que de N = 10⁷ até N = 10¹⁰ os 
+valores obtidos fossem iguais a 3.1415967941284179687500000000000000000000.
+
+Usando o tipo double, o valor obtido continuou se aproximando a cada entrada 
+que fazia o programa ir mais adiante na série.
+
+Atividade 3:
+
+A versão concorrente só é mais rápida (speedup > 1) que a sequencial 
+correspondente a partir de N = 10⁵.

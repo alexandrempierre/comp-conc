@@ -1,0 +1,162 @@
+Aluno: Alexandre de Alencar Moreira Pierre
+Disciplina: Computação Concorrente
+Laboratório 5
+
+---------------------------- Explicações ----------------------------
+
+"Sequencial em blocos" é o algoritmo sequencial correspondente ao 
+concorrente, isso pode ser confirmado notando que os valores obtidos 
+são sempre iguais aos da versão concorrente.
+
+---------------------------- Resultados ----------------------------
+
+Constante M_PI:	 3.14159265358979311599
+
+Tempo de entrada: 0.000301
+Tempo de saída: 0.000569
+Tempo total de entrada e saída: 0.000870
+
+
+N = 10³
+Sequencial:	 3.14059265383979013819
+
+Sequencial em Blocos
+Valor obtido:	 3.14059265383979147046
+Tempo gasto: 0.000030
+Tempo total: 0.000900
+
+Concorrente (2 threads)
+Valor obtido:	 3.14059265383979147046
+Tempo gasto: 0.000714
+Tempo total: 0.001584
+
+speedup: 0.5681818181818182
+
+
+N = 10⁴
+Sequencial:	 3.14149265359003093678
+
+Sequencial em Blocos
+Valor obtido:	 3.14149265359003759812
+Tempo gasto: 0.000273
+Tempo total: 0.001143
+
+Concorrente (2 threads)
+Valor obtido:	 3.14149265359003759812
+Tempo gasto: 0.000779
+Tempo total: 0.001649
+
+speedup: 0.6931473620375985
+
+
+N = 10⁵
+Sequencial:	 3.14158265358971622305
+
+Sequencial em Blocos
+Valor obtido:	 3.14158265358977617509
+Tempo gasto: 0.002770
+Tempo total: 0.003640
+
+Concorrente (2 threads)
+Valor obtido:	 3.14158265358977617509
+Tempo gasto: 0.004245
+Tempo total: 0.005115
+
+speedup: 0.7116324535679375
+
+
+N = 10⁶
+Sequencial:	 3.14159165358977920945
+
+Sequencial em Blocos
+Valor obtido:	 3.14159165358969127979
+Tempo gasto: 0.021843
+Tempo total: 0.022713
+
+Concorrente (2 threads)
+Valor obtido:	 3.14159165358969127979
+Tempo gasto: 0.019903
+Tempo total: 0.020773
+
+speedup: 1.0933904587685939
+
+
+N = 10⁷
+Sequencial:	 3.14159255358984701445
+
+Sequencial em Blocos
+Valor obtido:	 3.14159255358979683236
+Tempo gasto: 0.218084
+Tempo total: 0.218954
+
+Concorrente (2 threads)
+Valor obtido:	 3.14159255358979683236
+Tempo gasto: 0.124915
+Tempo total: 0.125785
+
+speedup: 1.7407004014787137
+
+
+N = 10⁸
+Sequencial:	 3.14159264358936862748
+
+Sequencial em Blocos
+Valor obtido:	 3.14159264359032297520
+Tempo gasto: 2.181955
+Tempo total: 2.182825
+
+Concorrente (2 threads)
+Valor obtido:	 3.14159264359032297520
+Tempo gasto: 1.103660
+Tempo total: 1.104530
+
+speedup: 1.9762478158130605
+
+
+N = 10⁹
+Sequencial:	 3.14159265258789854868
+
+Sequencial em Blocos
+Valor obtido:	 3.14159265258940578746
+Tempo gasto: 21.916010
+Tempo total: 21.916880
+
+Concorrente (2 threads)
+Valor obtido:	 3.14159265258940578746
+Tempo gasto: 12.135678
+Tempo total: 12.136548
+
+speedup: 1.805857810639401
+
+
+N = 10¹⁰
+Sequencial:	 3.14159265405348753219
+
+Sequencial em Blocos
+Valor obtido:	 3.14159265405361631806
+Tempo gasto: 46.847461
+Tempo total: 46.848331
+
+Concorrente (2 threads)
+Valor obtido:	 3.14159265405361631806
+Tempo gasto: 24.133875
+Tempo total: 24.134745
+
+speedup: 1.9411156405422971
+
+
+------------------ Observações e Conclusoes ------------------
+
+Atividade 1: 
+
+Usando o tipo float, o limite da precisão era alcançado antes que a série 
+fosse executada até o final, fazendo com que de N = 10⁷ até N = 10¹⁰ os 
+valores obtidos fossem iguais a 3.1415967941284179687500000000000000000000.
+
+Usando o tipo double, o valor obtido continuou se aproximando a cada entrada 
+que fazia o programa ir mais adiante na série.
+
+Atividade 3:
+
+A versão concorrente só é mais rápida (speedup > 1) que a sequencial 
+correspondente a partir de N = 10⁶.
