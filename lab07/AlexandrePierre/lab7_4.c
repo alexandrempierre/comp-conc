@@ -27,6 +27,7 @@ volatile int t34 = 0; // Variavel cujo valor vai determinar a execucao das threa
 void *T1 (void * tid) {
   printf("tudo bem?\n");
 
+  /* Sincronizacao condicional */
   pthread_mutex_lock(&mutex);
   t34++;
   if(t34 == 2) { pthread_cond_broadcast(&cond34); }
@@ -38,6 +39,7 @@ void *T1 (void * tid) {
 void *T2 (void * tid) {
   printf("hola!\n");
 
+  /* Sincronizacao condicional */
   pthread_mutex_lock(&mutex);
   t34++;
   if(t34 == 2) { pthread_cond_broadcast(&cond34); }
@@ -47,6 +49,7 @@ void *T2 (void * tid) {
 }
 
 void *T3 (void * tid) {
+  /* Sincronizacao condicional */
   pthread_mutex_lock(&mutex);
   if (t34 != 2) { pthread_cond_wait(&cond34, &mutex); }
   pthread_mutex_unlock(&mutex);
@@ -57,6 +60,7 @@ void *T3 (void * tid) {
 }
 
 void *T4 (void * tid) {
+  /* Sincronizacao condicional */
   pthread_mutex_lock(&mutex);
   if (t34 != 2) { pthread_cond_wait(&cond34, &mutex); }
   pthread_mutex_unlock(&mutex);
