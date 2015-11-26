@@ -66,6 +66,7 @@ void *T4 (void * tid) {
   pthread_exit(NULL);
 }
 
+/* Funcao principal */
 int main(int argc, char const *argv[]) {
   void *T[NTHREADS]; // vetor de funcoes (para usar estruturas de repeticao)
   pthread_t threads[NTHREADS];
