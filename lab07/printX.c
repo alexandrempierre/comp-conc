@@ -24,7 +24,7 @@ void *A (void *t) {
   int boba1, boba2;
 
   printf("A: Comecei: thread %d\n", *my_id);
-  
+
   for (i=0; i < TCOUNT; i++) {
     pthread_mutex_lock(&x_mutex);
     x++;
@@ -48,15 +48,15 @@ void *B (void *t) {
   printf("B: Comecei: thread %d\n", *my_id);
 
   pthread_mutex_lock(&x_mutex);
-  while ((x % 10) != 0) { //para o caso de B ser sinalizada e antes de retornar a execucao o valor de x mudar!
-  //if ((x % 10) != 0) { /*** pode gerar resultados inesperados ***/
+  // while ((x % 10) != 0) { //para o caso de B ser sinalizada e antes de retornar a execucao o valor de x mudar!
+  if ((x % 10) != 0) { /*** pode gerar resultados inesperados ***/
      printf("B: thread %d x = %d, vai se bloquear...\n", *my_id, x);
      pthread_cond_wait(&x_cond, &x_mutex);
      printf("B: thread %d, sinal recebido e mutex realocado. x = %d\n", *my_id, x);
   }
-  /*...faz alguma coisa com x */   
+  /*...faz alguma coisa com x */
   printf("X=%d\n", x);
-  pthread_mutex_unlock(&x_mutex); 
+  pthread_mutex_unlock(&x_mutex);
   free(my_id);
   pthread_exit(NULL);
 }
@@ -64,13 +64,13 @@ void *B (void *t) {
 
 /* Funcao principal */
 int main(int argc, char *argv[]) {
-  int i; 
+  int i;
   int *t1, *t2, *t3;
   pthread_t threads[NTHREADS];
   //aloca espaco para os identificadores das threads
-  t1=malloc(sizeof(int)); 
-  t2=malloc(sizeof(int)); 
-  t3=malloc(sizeof(int)); 
+  t1=malloc(sizeof(int));
+  t2=malloc(sizeof(int));
+  t3=malloc(sizeof(int));
   *t1=1, *t2=2, *t3=3;
 
   /* Inicilaiza o mutex (lock de exclusao mutua) e a variavel de condicao */

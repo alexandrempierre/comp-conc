@@ -46,3 +46,19 @@ Atividade 2)
   que a thread B escreve BYE BYE.
 
 Atividade 3)
+
+2. Sim, o X impresso pela thread B era sempre múltiplo de 10 e a execução da
+  thread B sempre terminava logo depois disso.
+
+3. Não sem deixar de atender a condição lógica, é possível que o valor de X
+  mude entre o instante em que o sinal de desbloqueio é enviado para a thread B
+  e o instante em que a execução da thread B continua efetivamente, caso as
+  linhas sejam trocadas (if no lugar do while) a condição (X ser múltiplo de 10)
+  só é testada ao bloquear a thread B fazendo com que seja possível que a thread
+  B continue sendo executada mesmo que essa condição volte a ser falsa antes da
+  thread voltar a ser executada fazendo com que a thread B imprima um resultado
+  diferente do esperado (não satisfazendo a condição lógica).
+
+4. Não, após algumas execuções o programa imprimiu X=13
+
+Atividade 4)
