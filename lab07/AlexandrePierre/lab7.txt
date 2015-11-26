@@ -60,5 +60,3 @@ Atividade 3)
   diferente do esperado (não satisfazendo a condição lógica).
 
 4. Não, após algumas execuções o programa imprimiu X=13
-
-Atividade 4)
