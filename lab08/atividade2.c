@@ -3,12 +3,15 @@
 #include <math.h>
 #include <pthread.h>
 
-#define TAM_BUFFER  5
-#define NTHREADS    3
-#define CONS        2
+#define TAM_BUFFER    5
+#define NTHREADS      3
+#define CONSUMIDORES  2
+#define PROD_LIMITE   25
+#define PBUFFER       printf("%d, %d, %d, %d, %d\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4])
 
 volatile int buffer[TAM_BUFFER];
 volatile int cont_buffer = 0;
+volatile int out = 1;
 
 pthread_mutex_t mutex;
 pthread_cond_t cond_prod;
@@ -39,47 +42,47 @@ int ehPrimo(long unsigned int n) {
   return 1;
 }
 
-void * produtor (void * args) {
-  int i, n;
+void *produtor (void *args) {
+  int i, item;
 
-  for (i = 1; i <= 25; i++) {
-    n = fibo(i);
-
+  for (i = 1; i <= PROD_LIMITE; ++i) {
+    item = fibo(i);
     pthread_mutex_lock(&mutex);
 
-    if (cont_buffer > 0) { pthread_cond_signal(&cond_cons); }
-    if (cont_buffer == TAM_BUFFER) { pthread_cond_wait(&cond_prod, &mutex); }
+    if (cont_buffer == TAM_BUFFER) pthread_cond_wait(&cond_prod, &mutex);
 
-    buffer[i % 5] = n;
+    buffer[i % TAM_BUFFER] = item;
     cont_buffer++;
 
+    pthread_cond_signal(&cond_cons);
     pthread_mutex_unlock(&mutex);
   }
 
   pthread_exit(NULL);
 }
 
-void * consumidor (void * args) {
-  int i, n;
+void *consumidor (void *args) {
+  int item, fim;
 
-  for (i = 1; i <= 25; i++) {
+  while (1) {
     pthread_mutex_lock(&mutex);
+    fim = out > PROD_LIMITE;
+    if (!fim) {
+      while (cont_buffer == 0) pthread_cond_wait(&cond_cons, &mutex);
 
-    if (cont_buffer < TAM_BUFFER) { pthread_cond_signal(&cond_prod); }
-    while (cont_buffer == 0) { pthread_cond_wait(&cond_cons, &mutex); }
-
-    n = buffer[i % 5];
-    cont_buffer--;
-
+      item = buffer[out++ % TAM_BUFFER];
+      cont_buffer--;
+    }
     pthread_mutex_unlock(&mutex);
-
-    printf("%5d %seh primo\n", n, ehPrimo(n) ? "" : "nao ");
+    if (fim) break;
+    printf("%2d: %5d %seh primo\n", out-1, item, ehPrimo(item) ? "" : "nao ");
   }
 
   pthread_exit(NULL);
 }
 
 int main(int argc, char const *argv[]) {
+  int i, item;
 
   pthread_t threads[NTHREADS];
   pthread_mutex_init(&mutex, NULL);
@@ -94,12 +97,10 @@ int main(int argc, char const *argv[]) {
   pthread_join(threads[1], NULL);
   pthread_join(threads[2], NULL);
 
-  // int i;
-  // for (i = 1; i <= 25; i++) {
-  //   printf("%2d: %5d: %seh primo\n", i, fibo(i), ehPrimo(fibo(i)) ? "" : "nao ");
+  // for (i = 0; i <= PROD_LIMITE; i++) {
+  //   item = fibo(i);
+  //   printf("%2d: %5d %seh primo\n", i, item, ehPrimo(item) ? "" : "nao ");
   // }
-
-  pthread_exit(NULL);
 
   return 0;
 }

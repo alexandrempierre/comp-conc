@@ -37,41 +37,50 @@ int ehPrimo(long unsigned int n) {
   return 1;
 }
 
+void Insere (int item, int in) {
+  pthread_mutex_lock(&mutex);
+
+  if (cont_buffer == TAM_BUFFER) pthread_cond_wait(&cond, &mutex);
+
+  buffer[in % 5] = item;
+  cont_buffer++;
+
+  pthread_cond_signal(&cond);
+
+  pthread_mutex_unlock(&mutex);
+}
+
+int Retira (int out) {
+  int item;
+
+  pthread_mutex_lock(&mutex);
+
+  if (cont_buffer == 0) pthread_cond_wait(&cond, &mutex);
+
+  item = buffer[out % 5];
+  cont_buffer--;
+
+  pthread_cond_signal(&cond);
+
+  pthread_mutex_unlock(&mutex);
+
+  return item;
+}
+
 void * produtor (void * args) {
-  int i, n;
 
-  for (i = 1; i <= 25; i++) {
-    n = fibo(i);
-
-    pthread_mutex_lock(&mutex);
-
-    if (cont_buffer > 0) { pthread_cond_signal(&cond); }
-    if (cont_buffer == TAM_BUFFER) { pthread_cond_wait(&cond, &mutex); }
-
-    buffer[i % 5] = n;
-    cont_buffer++;
-
-    pthread_mutex_unlock(&mutex);
-  }
+  int i;
+  for (i = 1; i <= 25; i++) Insere(fibo(i), i);
 
   pthread_exit(NULL);
 }
 
 void * consumidor (void * args) {
-  int i, n;
+  int i, item;
 
   for (i = 1; i <= 25; i++) {
-    pthread_mutex_lock(&mutex);
-
-    if (cont_buffer < TAM_BUFFER) { pthread_cond_signal(&cond); }
-    if (cont_buffer == 0) { pthread_cond_wait(&cond, &mutex); }
-
-    n = buffer[i % 5];
-    cont_buffer--;
-
-    pthread_mutex_unlock(&mutex);
-
-    printf("%5d %seh primo\n", n, ehPrimo(n) ? "" : "nao ");
+    item = Retira(i);
+    printf("%5d %seh primo\n", item, ehPrimo(item) ? "" : "nao ");
   }
 
   pthread_exit(NULL);
@@ -88,11 +97,6 @@ int main(int argc, char const *argv[]) {
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
-
-  // int i;
-  // for (i = 1; i <= 25; i++) {
-  //   printf("%2d: %5d: %seh primo\n", i, fibo(i), ehPrimo(fibo(i)) ? "" : "nao ");
-  // }
 
   pthread_exit(NULL);
 
