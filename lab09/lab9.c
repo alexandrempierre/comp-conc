@@ -17,9 +17,10 @@
  * leitura.
  */
 
-#define N         1   //threads leitoras
-#define M         1   //threads escritoras
+#define N         2   //threads leitoras
+#define M         2   //threads escritoras
 #define NTHREADS  (N+M)
+#define LOOPS     20
 
 typedef struct {
   int cont;
@@ -31,12 +32,15 @@ pthread_mutex_t mutex;
 pthread_cond_t cond;
 volatile int lendo = 0, escrevendo = 0, filaEscrever = 0;
 
+volatile int continua = LOOPS;
+
 void * escrever (void * tid) {
   int id = * (int *) tid;
   free(tid);
 
-  while (1) {
+  while (continua) {
     pthread_mutex_lock(&mutex);
+    continua--;
     filaEscrever++;
 
     while (lendo || escrevendo) {
@@ -50,7 +54,7 @@ void * escrever (void * tid) {
     escrevendo = 0;
     filaEscrever--;
 
-    printf("Thread %d escrevendo");
+    printf("Thread %d escrevendo\n", id);
     pthread_mutex_unlock(&mutex);
   }
 
@@ -62,9 +66,11 @@ void * ler (void * tid) {
   free(tid);
   estrutura estrLocal;
 
-  pthread_mutex_lock(&mutex);
-  while (1) {
-    while (escrevendo) {
+  while (continua) {
+    pthread_mutex_lock(&mutex);
+    continua--;
+    
+    while (escrevendo || estr.id == -1) {
       pthread_cond_wait(&cond, &mutex);
     }
     lendo = 1;
@@ -72,9 +78,9 @@ void * ler (void * tid) {
     estrLocal.cont = estr.cont;
     estrLocal.id = estr.id;
 
-    printf("Thread %d (leitora) - id: %d - cont: %d", id, estrLocal.id, estrLocal.cont);
+    printf("Thread %d (leitora) - id: %d - cont: %d\n", id, estrLocal.id, estrLocal.cont);
+    pthread_mutex_unlock(&mutex);
   }
-  pthread_mutex_unlock(&mutex);
 
   pthread_exit(NULL);
 }
@@ -93,20 +99,18 @@ int main(int argc, char const *argv[]) {
   for (i = 0; i < N; ++i) {
     tid = malloc(sizeof(int));
     *tid = i;
-    pthread_create(&thread[*tid], NULL, escrever, (void *) tid);
+    pthread_create(&threads[*tid], NULL, escrever, (void *) tid);
   }
 
   //Criacao das threads leitoras
-  while(estr.id == -1);
-
   for (i = 0; i < M; ++i) {
     tid = malloc(sizeof(int));
     *tid = N + i;
-    pthread_create(&thread[*tid], NULL, ler, (void *) tid);
+    pthread_create(&threads[*tid], NULL, ler, (void *) tid);
   }
 
   for (i = 0; i < NTHREADS; ++i) {
-    pthread_join(threads[i]);
+    pthread_join(threads[i], NULL);
   }
 
   return 0;
