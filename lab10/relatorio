@@ -1,0 +1,35 @@
+Atividade 1
+
+O semáforo implementa uma sincronização por exclusão mútua que transforma o
+incremento de s numa operação atômica, fazendo com que o resultado seja sempre
+o esperado (10⁶ * NTHREADS).
+
+A incialização do semáforo com 1 faz com que a primeira thread a ser executada
+decremente o contador para zero, fazendo com que a execução de qualquer outra
+thread que tente usar o mesmo semáforo após isso tenha sua execução suspensa,
+fazendo com que o semáforo implemente sincronização por exclusão mútua.
+
+Atividade 2
+
+1. A variável y só pode ser igual a 2.
+
+3. A ordem de execução e o valor de y foram sempre iguais.
+
+Os semáforos foram usados de modo a fazer suspender a execução de alguma thread
+aguardando a execução de outra, especificamente:
+
+  1 - a suspensão das threads 2 e 3 até que a 1 tivesse sido executada;
+  2 - o desbloqueio da 2 pela thread 1 após a execução desta;
+  3 - a execução da thread 2 e o desbloqueio da thread 3;
+  4 - a execução da thread 3, incluindo a impressão do valor de y (y=2).
+
+Tudo isso porque foram usados dois semáforos inicializando com zero após as
+threads 2 e 3 imprimirem na tela que haviam inicializado, cada uma chamava
+sem_wait em um semáforo diferente. A thread 1 começava com uma chamada de
+sem_post.
+
+4. A ordem de execução das threads (e consequentemente o valor de y) mudou em
+algumas execuções do programa. Quando o valor inicial do semáforo foi alterado
+para 1, as chamadas de sem_wait nas threads 2 e 3 (lembrando que são para
+semáforos diferentes) não suspendem a execução das threads 2 e 3, fazendo com
+que as threads possam ser executadas em qualquer ordem.

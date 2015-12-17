@@ -4,7 +4,7 @@
 /* Codigo: Comunicação entre threads usando variável compartilhada e sincronização com semáforos */
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
 
@@ -60,8 +60,8 @@ int main(int argc, char *argv[]) {
   }
 
   //inicia os semaforos
-  sem_init(&condt2, 0, 0);
-  sem_init(&condt3, 0, 0);
+  sem_init(&condt2, 0, 1);
+  sem_init(&condt3, 0, 1);
 
   //cria as tres threads
   if (pthread_create(&tid[2], NULL, t3, (void *)id[2])) { printf("--ERRO: pthread_create()\n"); exit(-1); }
@@ -71,9 +71,9 @@ int main(int argc, char *argv[]) {
   //--espera todas as threads terminarem
   for (t=0; t<NTHREADS; t++) {
     if (pthread_join(tid[t], NULL)) {
-         printf("--ERRO: pthread_join() \n"); exit(-1); 
-    } 
+         printf("--ERRO: pthread_join() \n"); exit(-1);
+    }
     free(id[t]);
-  } 
+  }
   pthread_exit(NULL);
 }

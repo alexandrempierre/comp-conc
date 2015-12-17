@@ -4,11 +4,11 @@
 /* Codigo: Comunicação entre threads usando variável compartilhada e sincronização com semáforos */
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <pthread.h>
 #include <semaphore.h>
 
-#define NTHREADS  2
+#define NTHREADS  9
 
 // Variaveis globais
 volatile int s = 0;    //variavel compartilhada entre as threads
@@ -21,7 +21,7 @@ void *ExecutaTarefa (void *threadid) {
   printf("Thread : %d esta executando...\n", *tid);
   for (i=0; i<10000000; i++) {
      sem_wait(&em); //entrada na secao critica
-     s++; //secao critica 
+     s++; //secao critica
      sem_post(&em); //saida da secao critica
   }
   printf("Thread : %d terminou!\n", *tid);
@@ -32,7 +32,7 @@ void *ExecutaTarefa (void *threadid) {
 //funcao principal
 int main(int argc, char *argv[]) {
   pthread_t tid[NTHREADS];
-  int t, *id; 
+  int t, *id;
   //inicia o semaforo binario
   sem_init(&em, 0, 1);
 
@@ -50,9 +50,9 @@ int main(int argc, char *argv[]) {
   //--espera todas as threads terminarem
   for (t=0; t<NTHREADS; t++) {
     if (pthread_join(tid[t], NULL)) {
-         printf("--ERRO: pthread_join() \n"); exit(-1); 
-    } 
-  } 
+         printf("--ERRO: pthread_join() \n"); exit(-1);
+    }
+  }
   printf("Valor de s = %d\n", s);
   pthread_exit(NULL);
 }
