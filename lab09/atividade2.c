@@ -15,12 +15,13 @@
  * As threads leitoras leem o valor da variavel (os dois campos) e o armazenam
  * em uma variavel local. Depois imprimem esse valor e voltam a solicitar nova
  * leitura.
+ *
+ * Com prioridade para escrita.
  */
 
-#define N         2   //threads leitoras
+#define N         5   //threads leitoras
 #define M         2   //threads escritoras
 #define NTHREADS  (N + M)
-#define LOOPS     20
 
 typedef struct {
   int cont;
@@ -38,7 +39,7 @@ void * escrever (void * tid) {
   int id = * (int *) tid;
   free(tid);
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
     continua--;
     filaEscrever++;
@@ -54,6 +55,8 @@ void * escrever (void * tid) {
     escrevendo = 0;
     filaEscrever--;
 
+    pthread_cond_broadcast(&cond);
+
     printf("Thread %d escrevendo\n", id);
     pthread_mutex_unlock(&mutex);
   }
@@ -66,10 +69,10 @@ void * ler (void * tid) {
   free(tid);
   estrutura estrLocal;
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
 
-    while (filaEscrever || escrevendo && !estr.id)
+    while (estrLocal.cont == estr.cont || filaEscrever || escrevendo && estr.id != -1)
       pthread_cond_wait(&cond, &mutex);
 
     lendo = 1;
@@ -78,6 +81,8 @@ void * ler (void * tid) {
     estrLocal.id = estr.id;
 
     lendo = 0;
+
+    pthread_cond_broadcast(&cond);
 
     printf("Thread %d (leitora) - id: %d - cont: %d\n", id, estrLocal.id, estrLocal.cont);
     pthread_mutex_unlock(&mutex);
@@ -91,7 +96,7 @@ int main(int argc, char const *argv[]) {
   pthread_t threads[NTHREADS];
   int i, *tid;
   estr.cont = 0;
-  estr.id = 0;
+  estr.id = -1;
 
   pthread_mutex_init(&mutex, NULL);
   pthread_cond_init(&cond, NULL);

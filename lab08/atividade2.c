@@ -3,19 +3,15 @@
 #include <math.h>
 #include <pthread.h>
 
-#define TAM_BUFFER    5
-#define NTHREADS      3
-#define CONSUMIDORES  2
-#define PROD_LIMITE   25
-#define PBUFFER       printf("%d, %d, %d, %d, %d\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4])
+#define TAM_BUFFER  5
+#define NTHREADS    3
+#define PROD_LIM    25
 
 volatile int buffer[TAM_BUFFER];
-volatile int cont_buffer = 0;
-volatile int out = 1;
+volatile int cont_buffer = 0, out = 1;
 
 pthread_mutex_t mutex;
-pthread_cond_t cond_prod;
-pthread_cond_t cond_cons;
+pthread_cond_t cond_prod, cond_cons;
 
 int fibo (int n) {
   int t0 = 0, t1 = 1;
@@ -42,52 +38,62 @@ int ehPrimo(long unsigned int n) {
   return 1;
 }
 
-void *produtor (void *args) {
-  int i, item;
+void Insere (int item, int in) {
+  pthread_mutex_lock(&mutex);
 
-  for (i = 1; i <= PROD_LIMITE; ++i) {
-    item = fibo(i);
-    pthread_mutex_lock(&mutex);
+  if (cont_buffer == TAM_BUFFER) pthread_cond_wait(&cond_prod, &mutex);
 
-    if (cont_buffer == TAM_BUFFER) pthread_cond_wait(&cond_prod, &mutex);
+  buffer[in % 5] = item;
+  cont_buffer++;
 
-    buffer[i % TAM_BUFFER] = item;
-    cont_buffer++;
+  pthread_cond_signal(&cond_cons);
 
-    pthread_cond_signal(&cond_cons);
-    pthread_mutex_unlock(&mutex);
-  }
+  pthread_mutex_unlock(&mutex);
+}
+
+int Retira (void) {
+  int item;
+
+  pthread_mutex_lock(&mutex);
+
+  if (cont_buffer == 0) pthread_cond_wait(&cond_cons, &mutex);
+
+  item = buffer[out++ % 5];
+  cont_buffer--;
+
+  pthread_cond_signal(&cond_prod);
+
+  printf("%5d %seh primo\n", item, ehPrimo(item) ? "" : "nao ");
+
+  pthread_mutex_unlock(&mutex);
+
+  return item;
+}
+
+void * produtor (void * args) {
+  int i;
+  for (i = 1; i <= PROD_LIM; i++) Insere(fibo(i), i);
 
   pthread_exit(NULL);
 }
 
-void *consumidor (void *args) {
-  int item, fim;
+void * consumidor (void * args) {
+  int i, item;
 
   while (1) {
-    pthread_mutex_lock(&mutex);
-    fim = out > PROD_LIMITE;
-    if (!fim) {
-      while (cont_buffer == 0) pthread_cond_wait(&cond_cons, &mutex);
-
-      item = buffer[out++ % TAM_BUFFER];
-      cont_buffer--;
-    }
-    pthread_mutex_unlock(&mutex);
-    if (fim) break;
-    printf("%2d: %5d %seh primo\n", out-1, item, ehPrimo(item) ? "" : "nao ");
+    Retira();
+    if (out >= 24) break;
   }
 
   pthread_exit(NULL);
 }
 
 int main(int argc, char const *argv[]) {
-  int i, item;
-
   pthread_t threads[NTHREADS];
+
   pthread_mutex_init(&mutex, NULL);
-  pthread_cond_init(&cond_prod, NULL);
   pthread_cond_init(&cond_cons, NULL);
+  pthread_cond_init(&cond_prod, NULL);
 
   pthread_create(&threads[0], NULL, produtor, NULL);
   pthread_create(&threads[1], NULL, consumidor, NULL);
@@ -96,11 +102,6 @@ int main(int argc, char const *argv[]) {
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
   pthread_join(threads[2], NULL);
-
-  // for (i = 0; i <= PROD_LIMITE; i++) {
-  //   item = fibo(i);
-  //   printf("%2d: %5d %seh primo\n", i, item, ehPrimo(item) ? "" : "nao ");
-  // }
 
   return 0;
 }

@@ -15,12 +15,16 @@
  * As threads leitoras leem o valor da variavel (os dois campos) e o armazenam
  * em uma variavel local. Depois imprimem esse valor e voltam a solicitar nova
  * leitura.
+ *
+ * Nessa minha versão, toda vez que o valor da estrutura so pode ser alterado
+ * apos ser lido por todas as threads leitoras e cada leitora soh vai ler cada
+ * valor uma unica vez
  */
 
-#define N         2   //threads leitoras
-#define M         2   //threads escritoras
+#define N         20   //threads leitoras
+#define M         200   //threads escritoras
 #define NTHREADS  (N + M)
-#define LOOPS     20
+#define PRI_ESCR  estr.id == -1
 
 typedef struct {
   int cont;
@@ -31,19 +35,33 @@ volatile estrutura estr;
 pthread_mutex_t mutex;
 pthread_cond_t cond;
 volatile int lendo = 0, escrevendo = 0, filaEscrever = 0;
+volatile int lido[N];
 
 volatile int continua;
+
+int todasLeram () {
+  int res = 1, i;
+  for (i = 0; i < N; ++i)
+    res &= lido[i];
+
+  return res;
+}
+
+void zeraLido () {
+  int i;
+  for (i = 0; i < N; ++i)
+    lido[i] = 0;
+}
 
 void * escrever (void * tid) {
   int id = * (int *) tid;
   free(tid);
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
-    continua--;
-    filaEscrever++;
+    printf("Thread %d (escritora) iniciada\n", id);
 
-    while (lendo || escrevendo)
+    while (lendo || escrevendo || !(todasLeram() || PRI_ESCR))
       pthread_cond_wait(&cond, &mutex);
 
     escrevendo = 1;
@@ -52,7 +70,9 @@ void * escrever (void * tid) {
     estr.id = id;
 
     escrevendo = 0;
-    filaEscrever--;
+    zeraLido();
+
+    pthread_cond_broadcast(&cond);
 
     printf("Thread %d escrevendo\n", id);
     pthread_mutex_unlock(&mutex);
@@ -66,11 +86,13 @@ void * ler (void * tid) {
   free(tid);
   estrutura estrLocal;
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
+    printf("Thread %d (leitora) iniciada\n", id);
 
-    while (filaEscrever || escrevendo && !estr.id)
+    while (lido[id] || escrevendo) {
       pthread_cond_wait(&cond, &mutex);
+    }
 
     lendo = 1;
 
@@ -78,6 +100,9 @@ void * ler (void * tid) {
     estrLocal.id = estr.id;
 
     lendo = 0;
+    lido[id] = 1;
+
+    pthread_cond_broadcast(&cond);
 
     printf("Thread %d (leitora) - id: %d - cont: %d\n", id, estrLocal.id, estrLocal.cont);
     pthread_mutex_unlock(&mutex);
@@ -91,23 +116,27 @@ int main(int argc, char const *argv[]) {
   pthread_t threads[NTHREADS];
   int i, *tid;
   estr.cont = 0;
-  estr.id = 0;
+  estr.id = -1;
 
   pthread_mutex_init(&mutex, NULL);
   pthread_cond_init(&cond, NULL);
 
-  //Criacao das threads escritoras
-  for (i = 0; i < N; ++i) {
-    tid = malloc(sizeof(int));
-    *tid = i;
-    pthread_create(&threads[*tid], NULL, escrever, (void *) tid);
-  }
+  for (i = 0; i < N; ++i)
+    lido[i] = 1;
+
 
   //Criacao das threads leitoras
   for (i = 0; i < M; ++i) {
     tid = malloc(sizeof(int));
-    *tid = N + i;
+    *tid = i;
     pthread_create(&threads[*tid], NULL, ler, (void *) tid);
+  }
+
+  //Criacao das threads escritoras
+  for (i = 0; i < N; ++i) {
+    tid = malloc(sizeof(int));
+    *tid = M + i;
+    pthread_create(&threads[*tid], NULL, escrever, (void *) tid);
   }
 
   for (i = 0; i < NTHREADS; ++i) {

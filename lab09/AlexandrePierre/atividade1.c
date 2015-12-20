@@ -20,7 +20,6 @@
 #define N         2   //threads leitoras
 #define M         2   //threads escritoras
 #define NTHREADS  (N + M)
-#define LOOPS     20
 
 typedef struct {
   int cont;
@@ -38,10 +37,8 @@ void * escrever (void * tid) {
   int id = * (int *) tid;
   free(tid);
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
-    continua--;
-    filaEscrever++;
 
     while (lendo || escrevendo)
       pthread_cond_wait(&cond, &mutex);
@@ -52,7 +49,8 @@ void * escrever (void * tid) {
     estr.id = id;
 
     escrevendo = 0;
-    filaEscrever--;
+
+    pthread_cond_broadcast(&cond);
 
     printf("Thread %d escrevendo\n", id);
     pthread_mutex_unlock(&mutex);
@@ -66,10 +64,10 @@ void * ler (void * tid) {
   free(tid);
   estrutura estrLocal;
 
-  while (estr.cont < LOOPS) {
+  while (1) {
     pthread_mutex_lock(&mutex);
 
-    while (filaEscrever || escrevendo && !estr.id)
+    while (escrevendo && !estr.id)
       pthread_cond_wait(&cond, &mutex);
 
     lendo = 1;
@@ -78,6 +76,8 @@ void * ler (void * tid) {
     estrLocal.id = estr.id;
 
     lendo = 0;
+
+    pthread_cond_broadcast(&cond);
 
     printf("Thread %d (leitora) - id: %d - cont: %d\n", id, estrLocal.id, estrLocal.cont);
     pthread_mutex_unlock(&mutex);

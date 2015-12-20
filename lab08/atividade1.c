@@ -70,7 +70,7 @@ int Retira (int out) {
 void * produtor (void * args) {
 
   int i;
-  for (i = 1; i <= 25; i++) Insere(fibo(i), i);
+  for (i = 0; i < 25; i++) Insere(fibo(i), i + 1);
 
   pthread_exit(NULL);
 }
@@ -78,8 +78,8 @@ void * produtor (void * args) {
 void * consumidor (void * args) {
   int i, item;
 
-  for (i = 1; i <= 25; i++) {
-    item = Retira(i);
+  for (i = 0; i < 25; i++) {
+    item = Retira(i + 1);
     printf("%5d %seh primo\n", item, ehPrimo(item) ? "" : "nao ");
   }
 
