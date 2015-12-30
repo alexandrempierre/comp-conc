@@ -13,6 +13,8 @@ typedef struct estrIntegralDef {
 
 double e;
 
+/* TODO: Verificar possibilidade de implementar tail call optimization */
+
 double somarAreas (Arvore *areas) {
   double soma = 0;
 
