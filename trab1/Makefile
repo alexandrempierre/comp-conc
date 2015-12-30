@@ -1,6 +1,6 @@
-all: main clean
-main: main.o integral.o funcoes.o arv.o
-	gcc -o main main.o integral.o funcoes.o arv.o -lm -W -Wall
+all: main.out clean
+main.out: main.o integral.o funcoes.o arv.o
+	gcc -o main.out main.o integral.o funcoes.o arv.o -lm -W -Wall
 main.o: main.c integral.h funcoes.h
 	gcc -o main.o -c main.c -W -Wall
 integral.o: integral.c funcoes.h arv.h
