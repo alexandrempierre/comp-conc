@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 // #include "timer.h"
 // #include <pthread.h>
 #include "funcoes.h"
@@ -18,7 +17,7 @@ int main (int argc, char const *argv[]) {
     exit(-1);
   }
 
-  /*  */
+  /* Teste do formato dos argumentos de entrada */
   if (sscanf(argv[1], "%lf", &a) != 1) {
     printf("--ERRO: primeiro argumento (inicio do intervalo) esta fora do padrao\n");
     printf("Esperado um valor do tipo double\n\n");
@@ -39,10 +38,12 @@ int main (int argc, char const *argv[]) {
 
   if (argumentosOk < 3) { exit(-1); }
 
+  /* Integral */
+  
   e = fabs(e);
-  area = integrar(a, b, funcoes[1]);
+  area = integrar(a, b, funcoes[0]);
 
-  printf("A integral definida da função escolhida no intervalo [%.2f, %.2f] é %lf\n", a, b, area);
+  printf("Integral definida em [%f, %f]: %f\n", a, b, area);
 
   return 0;
 }
