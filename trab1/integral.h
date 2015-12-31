@@ -4,10 +4,8 @@
 #include "funcoes.h"
 #include "arv.h"
 
-double e;
-
-Arvore *dividirAreas (double x0, double x1, FuncaoPtr f);
+Arvore *dividirAreas (double x0, double x1, double erroMaximo, FuncaoPtr f);
 double somarAreas (Arvore *areas);
-double integrar (double x0, double x1, FuncaoPtr f);
+double integrar (double x0, double x1, double erroMaximo, FuncaoPtr f);
 
 #endif

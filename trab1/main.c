@@ -6,7 +6,7 @@
 #include "integral.h"
 
 int main (int argc, char const *argv[]) {
-  double a, b, area;
+  double a, b, e, area;
   int argumentosOk = 3;
 
   /* Teste dos argumentos de entrada */
@@ -39,9 +39,8 @@ int main (int argc, char const *argv[]) {
   if (argumentosOk < 3) { exit(-1); }
 
   /* Integral */
-  
-  e = fabs(e);
-  area = integrar(a, b, funcoes[0]);
+  e = fabs(e); // Transforma o erro num numero nao-negativo
+  area = integrar(a, b, e, funcoes[0]);
 
   printf("Integral definida em [%f, %f]: %f\n", a, b, area);
 

@@ -11,8 +11,6 @@ typedef struct estrIntegralDef {
   double areaComSinal, erro;
 } IntegralDef;
 
-double e;
-
 /* TODO: Verificar possibilidade de implementar tail call optimization */
 
 double somarAreas (Arvore *areas) {
@@ -33,7 +31,7 @@ double somarAreas (Arvore *areas) {
   return soma;
 }
 
-Arvore *dividirAreas (double x0, double x1, FuncaoPtr f) {
+Arvore *dividirAreas (double x0, double x1, double erroMaximo, FuncaoPtr f) {
   Arvore *areas;
   double area, subAreaA, subAreaB, m;
   IntegralDef *integral = (IntegralDef *)malloc(sizeof(IntegralDef));
@@ -48,16 +46,16 @@ Arvore *dividirAreas (double x0, double x1, FuncaoPtr f) {
 
   areas = arvCriarNo((void *) integral, arvCriarVazia(), arvCriarVazia());
 
-  if (fabs(integral->erro) > e) {
-    areas->esq = dividirAreas(x0, m, f);
-    areas->dir = dividirAreas(m, x1, f);
+  if (fabs(integral->erro) > erroMaximo) {
+    areas->esq = dividirAreas(x0, m, erroMaximo, f);
+    areas->dir = dividirAreas(m, x1, erroMaximo, f);
   }
 
   return areas;
 }
 
-double integrar(double x0, double x1, FuncaoPtr f) {
-  Arvore *areas = dividirAreas(x0, x1, f);
+double integrar(double x0, double x1, double erroMaximo, FuncaoPtr f) {
+  Arvore *areas = dividirAreas(x0, x1, erroMaximo, f);
 
   return somarAreas(areas);
 }
