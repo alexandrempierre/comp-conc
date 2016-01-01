@@ -1,5 +1,7 @@
 CC=gcc
-CFLAGS=-W -Wall -I.
+
+IDIR=include
+CFLAGS=-W -Wall -I$(IDIR)
 EXEC=main.out
 SRC=$(wildcard *.c)
 OBJ=$(SRC:.c=.o)
