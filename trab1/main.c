@@ -1,7 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-// #include "timer.h"
+#include <stdio.h>  // Entrada e saida padrao
+#include <stdlib.h> // Biblioteca padrao com funcoes como exit()
+#include <math.h>   // Para usar a funcao fabs()
 // #include <pthread.h>
+// #include "timer.h"
 #include "funcoes.h"
 #include "integral.h"
 

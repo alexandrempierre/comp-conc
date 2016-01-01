@@ -1,9 +1,5 @@
 #include <stdlib.h>
-
-typedef struct estrArvoreBinaria {
-  void *info;
-  struct estrArvoreBinaria *esq, *dir;
-} Arvore;
+#include "arv.h"
 
 Arvore *arvCriarVazia () {
   return NULL;

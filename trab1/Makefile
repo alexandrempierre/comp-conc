@@ -1,15 +1,16 @@
-all: main.out clean
-main.out: main.o integral.o funcoes.o arv.o
-	gcc -o main.out main.o integral.o funcoes.o arv.o -lm -W -Wall
-main.o: main.c integral.h funcoes.h
-	gcc -o main.o -c main.c -W -Wall
-integral.o: integral.c funcoes.h arv.h
-	gcc -o integral.o -c integral.c -W -Wall
-funcoes.o: funcoes.c
-	gcc -o funcoes.o -c funcoes.c -W -Wall
-arv.o: arv.c
-	gcc -o arv.o -c arv.c -W -Wall
+CC=gcc
+CFLAGS=-W -Wall -I.
+EXEC=main.out
+SRC=$(wildcard *.c)
+OBJ=$(SRC:.c=.o)
+
+all: $(EXEC) clean
+$(EXEC): $(OBJ)
+	@$(CC) -o $@ $^ -lm $(CFLAGS)
+%.o: %.c
+	@$(CC) -o $@ -c $< $(CFLAGS)
+.PHONY: clean mrproper
 clean:
-	rm -rf *.o
-mproper:
-	rm main
+	@rm -rf *.o
+mrproper:
+	@if [ -e $(EXEC) ]; then rm $(EXEC); fi
