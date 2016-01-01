@@ -1,11 +1,9 @@
 #include <math.h>
+#include "funcoes.h"
 
-#define FUNCOES_CONT 5
-#define QUADRADO(x) (x*x)
-#define CUBO(x)     (x*x*x)
-#define QUARTA(x)   (QUADRADO(x)*QUADRADO(x))
-
-typedef double (*FuncaoPtr)(double);
+#define QUADRADO(x) pow(x,2)
+#define CUBO(x)     pow(x,3)
+#define QUARTA(x)   pow(x,4)
 
 /* Funcoes */
 double fA (double x) { return 1.0 + x; }
@@ -16,7 +14,7 @@ double fC (double x) { return sqrt(1.0 - QUARTA(x)); }
 
 double fD (double x) { return sin(QUADRADO(x)); }
 
-double fE (double x) { return cos(1.0 / pow(M_E, x)) * (.005 * CUBO(x) + 1.0); }
+double fE (double x) { return cos(pow(M_E, -x)) * (.005 * CUBO(x) + 1.0); }
 
 // double (* funcoes[FUNCOES_CONT])(double) = { &fA, &fB, &fC, &fD, &fE };
 FuncaoPtr funcoes[FUNCOES_CONT] = { &fA, &fB, &fC, &fD, &fE };

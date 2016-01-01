@@ -1,6 +1,8 @@
 #include <stdlib.h>
-#include "funcoes.h"
+#include <math.h>
 #include "arv.h"
+#include "funcoes.h"
+#include "integral.h"
 
 #define PONTO_MEDIO(x0, x1)         ( 0.5 * (x0 + x1) )
 #define RETANGULO_BASE(x0, x1)      ( x1 - x0 )
@@ -13,6 +15,7 @@ typedef struct estrIntegralDef {
 
 /* TODO: Verificar possibilidade de implementar tail call optimization */
 
+/* Funcoes utilizadas para dividir o trabalho de integrar */
 double somarAreas (Arvore *areas) {
   double soma = 0;
 
@@ -54,6 +57,7 @@ Arvore *dividirAreas (double x0, double x1, double erroMaximo, FuncaoPtr f) {
   return areas;
 }
 
+/* Funcao usada externamente para integrar */
 double integrar(double x0, double x1, double erroMaximo, FuncaoPtr f) {
   Arvore *areas = dividirAreas(x0, x1, erroMaximo, f);
 
