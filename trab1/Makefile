@@ -1,18 +1,24 @@
 CC=gcc
 
 IDIR=include
+LDLIBS=-lm
 CFLAGS=-W -Wall -I$(IDIR)
-EXEC=main.out
-SRC=$(wildcard *.c)
-OBJ=$(SRC:.c=.o)
+
+BDIR:=bin
+EXEC=$(BDIR)/main.out
+
+LDIR=lib
+SDIR=src
+CFILES=$(foreach dir, $(LDIR) $(SDIR), $(wildcard $(dir)/*.c))
+OBJ=$(CFILES:.c=.o)
 
 all: $(EXEC) clean
 $(EXEC): $(OBJ)
-	@$(CC) -o $@ $^ -lm $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDLIBS)
 %.o: %.c
-	@$(CC) -o $@ -c $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS)
 .PHONY: clean mrproper
 clean:
-	@rm -rf *.o
+	rm -rf *.o */*.o
 mrproper:
-	@if [ -e $(EXEC) ]; then rm $(EXEC); fi
+	if [ -e $(EXEC) ]; then rm $(EXEC); fi
