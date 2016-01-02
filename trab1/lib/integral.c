@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "arv.h"
-#include "funcoes.h"
 #include "integral.h"
 
 #define PONTO_MEDIO(x0, x1)         ( 0.5 * (x0 + x1) )

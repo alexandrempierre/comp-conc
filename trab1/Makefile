@@ -38,6 +38,6 @@ mkObjDir:
 	@if [ ! -e $(ODIR) ]; then mkdir -p $(ODIR); fi
 .PHONY: clean mrproper
 clean:
-	@rm -rf $(ODIR)
+	@rm -rf $(ODIR)/*.o
 mrproper:
 	@if [ -e $(EXEC) ]; then rm $(EXEC); fi
