@@ -12,45 +12,53 @@ typedef struct estrIntegralDef {
   double areaComSinal, erro;
 } IntegralDef;
 
-/* TODO: Verificar possibilidade de implementar tail call optimization */
+typedef struct estrArea {
+  double area;
+  int def;
+} Area;
 
-/* Funcoes utilizadas para dividir o trabalho de integrar */
+/* A funcao abaixo soma os valores das folhas da arvore, ela so esta escrita
+ * dessa forma porque a funcao que divide as areas nao cria o no da area que
+ * nao vai ser utilizada, em lugar disso apenas calcula a area e verifica se o
+ * erro exige que aquela area seja subdividida, em caso afirmativo os nos sao
+ * criados
+ */
 double somarAreas (Arvore *areas) {
-  double soma = 0;
+  double soma;
+  TipoNo tipo = arvTipoNo(areas);
 
-  if (!arvVazia(areas)) {
-    if (!arvVazia(areas->esq)) {
-      soma += somarAreas(areas->esq);
-      soma += somarAreas(areas->dir);
-    }
-    else {
-      IntegralDef *integral;
-      integral = (IntegralDef *) areas->info;
-      soma += integral->areaComSinal;
-    }
+  switch (tipo) {
+    case VAZIO: soma = 0; break;
+    case FOLHA: soma = ((IntegralDef *) areas->info)->areaComSinal; break;
+    case GALHO: soma = somarAreas(areas->esq) + somarAreas(areas->dir); break;
+    default: break;
   }
 
   return soma;
 }
 
-Arvore *dividirAreas (double x0, double x1, double erroMaximo, FuncaoPtr f) {
+Arvore *dividirAreas (Area areaRet, double x0, double x1, double erroMaximo, FuncaoPtr f) {
   Arvore *areas;
-  double area, subAreaA, subAreaB, m;
-  IntegralDef *integral = (IntegralDef *)malloc(sizeof(IntegralDef));
+  double area, subAreaEsq, subAreaDir, m;
+  IntegralDef *integral = (IntegralDef *) malloc(sizeof(IntegralDef));
 
   m = PONTO_MEDIO(x0, x1);
-  area = RETANGULO_AREA(x0, x1, f);
-  subAreaA = RETANGULO_AREA(x0, m, f);
-  subAreaB = RETANGULO_AREA(m, x1, f);
+  area = areaRet.def ? areaRet.area : RETANGULO_AREA(x0, x1, f);
+  subAreaEsq = RETANGULO_AREA(x0, m, f);
+  subAreaDir = RETANGULO_AREA(m, x1, f);
 
   integral->areaComSinal = area;
-  integral->erro = area - (subAreaA + subAreaB);
+  integral->erro = area - (subAreaEsq + subAreaDir);
 
   areas = arvCriarNo((void *) integral, arvCriarVazia(), arvCriarVazia());
 
   if (fabs(integral->erro) > erroMaximo) {
-    areas->esq = dividirAreas(x0, m, erroMaximo, f);
-    areas->dir = dividirAreas(m, x1, erroMaximo, f);
+    areaRet.def = 1;
+    areaRet.area = subAreaEsq;
+    areas->esq = dividirAreas(areaRet, x0, m, erroMaximo, f);
+    
+    areaRet.area = subAreaDir;
+    areas->dir = dividirAreas(areaRet, m, x1, erroMaximo, f);
   }
 
   return areas;
@@ -58,7 +66,10 @@ Arvore *dividirAreas (double x0, double x1, double erroMaximo, FuncaoPtr f) {
 
 /* Funcao usada externamente para integrar */
 double integrar(double x0, double x1, double erroMaximo, FuncaoPtr f) {
-  Arvore *areas = dividirAreas(x0, x1, erroMaximo, f);
+  Area areaRet;
+  areaRet.def = 0;
+
+  Arvore *areas = dividirAreas(areaRet, x0, x1, erroMaximo, f);
 
   return somarAreas(areas);
 }

@@ -27,3 +27,15 @@ Arvore *arvLiberar (Arvore *arv) {
 
   return NULL;
 }
+
+TipoNo arvTipoNo (Arvore *arv) {
+  if (arv == NULL) return VAZIO;
+  if (arv->esq == NULL && arv->dir == NULL) return FOLHA;
+
+  return GALHO;
+}
+
+int arvSubArvoresVazias (Arvore *arv) {
+  if (arv == NULL) return -1;
+  return arv->esq == NULL && arv->dir == NULL;
+}
