@@ -1,0 +1,41 @@
+Atividade 1)
+
+1.  * É criada uma classe Hello que implementa a interface Runnable para que o
+  Hello possa ser executada pelas Threads, escrevendo uma mensagem na tela ao
+  ser executada
+
+    * No método main da classe HelloThread são criadas 10 instâncias da classe
+  Thread, cada uma recebendo uma instância da classe Hello
+
+    * Ainda no main, as threads são iniciadas num loop for e o método run() de
+  cada Hello correspondente a cada thread é chamado, não há como prever a ordem
+  em que as threads serão executadas no código em questão
+
+    * Quando o loop for termina, é impressa na tela a string "Terminou"
+
+3.  Há mudanças na ordem de execução das threads. Porque as threads não
+  necessariamente são executadas na ordem em que são criadas ou iniciadas.
+
+5.  Agora, antes de imprimir na tela a string "Terminou" o programa aguarda o
+  fim de todas as threads e não só do loop que as inicia.
+
+Atividade 2)
+
+1.  O código a ser executado pela Thread faz parte da classe que representa a
+  Thread.
+
+Atividade 3)
+
+1.  A seção crítica do código é o incremento do valor de s dentro da thread.
+  Espera-se que s termine com valor igual a 20000000.
+
+2.  Nenhuma das execuções imprimiu na tela o valor esperado. Porque o incremento
+  de s, embora seja a seção crítica do programa, não é uma tarefa atômica, ou
+  seja, é composta por mais de uma instrução podendo haver interrupções antes
+  que a tarefa desempenhada tenha sido completamente terminada.
+
+Atividade 4)
+
+3.  Os valores impressos foram sempre o esperado. A palavra reservada
+  synchronized indica uma exclusão mútua: cada bloco synchronized() de cada
+  instância será executado um por vez sem que seja paralelizado.
