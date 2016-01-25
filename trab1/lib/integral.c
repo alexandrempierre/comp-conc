@@ -4,9 +4,9 @@
 #include "integral.h"
 
 #define PONTO_MEDIO(x0, x1)         ( 0.5 * (x0 + x1) )
-#define RETANGULO_BASE(x0, x1)      ( x1 - x0 )
-#define RETANGULO_ALTURA(x0, x1, f) ( f(PONTO_MEDIO(x0, x1)) )
-#define RETANGULO_AREA(x0, x1, f)   ( RETANGULO_BASE(x0, x1) * RETANGULO_ALTURA(x0, x1, f) )
+#define ALTURA(x0, x1, f) ( f(PONTO_MEDIO(x0, x1)) )
+
+#define AREA(x0, x1, h)             ( (x1 - x0) * h )
 
 typedef struct estrIntegralDef {
   double areaComSinal, erro;
@@ -37,39 +37,43 @@ double somarAreas (Arvore *areas) {
   return soma;
 }
 
-Arvore *dividirAreas (Area areaRet, double x0, double x1, double erroMaximo, FuncaoPtr f) {
+Arvore *dividirAreas (Area areaRet, double x0, double x1) {
   Arvore *areas;
-  double area, subAreaEsq, subAreaDir, m;
+  double area, subAreaEsq, subAreaDir, m, h;
   IntegralDef *integral = (IntegralDef *) malloc(sizeof(IntegralDef));
 
   m = PONTO_MEDIO(x0, x1);
-  area = areaRet.def ? areaRet.area : RETANGULO_AREA(x0, x1, f);
-  subAreaEsq = RETANGULO_AREA(x0, m, f);
-  subAreaDir = RETANGULO_AREA(m, x1, f);
+  h = funcao(m);
+  area = areaRet.def ? areaRet.area : AREA(x0, x1, h);
+  subAreaEsq = AREA(x0, m, ALTURA(x0, m, funcao));
+  subAreaDir = AREA(m, x1, ALTURA(m, x1, funcao));
 
   integral->areaComSinal = area;
-  integral->erro = area - (subAreaEsq + subAreaDir);
+  integral->erro = fabs(area - (subAreaEsq + subAreaDir));
 
   areas = arvCriarNo((void *) integral, arvCriarVazia(), arvCriarVazia());
 
-  if (fabs(integral->erro) > erroMaximo) {
+  if (integral->erro > erroMaximo) {
     areaRet.def = 1;
     areaRet.area = subAreaEsq;
-    areas->esq = dividirAreas(areaRet, x0, m, erroMaximo, f);
-    
+    areas->esq = dividirAreas(areaRet, x0, m);
+
     areaRet.area = subAreaDir;
-    areas->dir = dividirAreas(areaRet, m, x1, erroMaximo, f);
+    areas->dir = dividirAreas(areaRet, m, x1);
   }
 
   return areas;
 }
 
 /* Funcao usada externamente para integrar */
-double integrar(double x0, double x1, double erroMaximo, FuncaoPtr f) {
+double integrar(double x0, double x1, double e, FuncaoPtr f) {
   Area areaRet;
   areaRet.def = 0;
 
-  Arvore *areas = dividirAreas(areaRet, x0, x1, erroMaximo, f);
+  erroMaximo = e;
+  funcao = f;
+
+  Arvore *areas = dividirAreas(areaRet, x0, x1);
 
   return somarAreas(areas);
 }
