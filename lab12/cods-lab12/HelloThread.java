@@ -40,9 +40,9 @@ class HelloThread {
       }
 
       //--PASSO extra: esperar pelo termino das threads
-      // for (int i=0; i<threads.length; i++) {
-      //      try { threads[i].join(); } catch (InterruptedException e) { return; }
-      // }
+      for (int i=0; i<threads.length; i++) {
+           try { threads[i].join(); } catch (InterruptedException e) { return; }
+      }
 
       System.out.println("Terminou");
    }
