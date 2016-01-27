@@ -1,15 +1,19 @@
-import java.util.LinkedList; // Estrutura de dados sem tamanho pré-definido que possa facilmente ser utilizada em FIFO
+import java.util.LinkedList; // Estrutura de dados sem tamanho pre-definido que possa facilmente ser utilizada em FIFO
+import java.util.NoSuchElementException;
+import exceptions.UndergroundFloorException;
 
 public class Floor
 {
-  private int floorNumber; // numero do andar
   private LinkedList<Request> requests; // fila de requisicoes no andar
 
-  public int getFloor () {
-    return floorNumber;
+  private void checkEmptyness (String message) {
+    if (requests.size() == 0)
+      throw new NoSuchElementException(message);
   }
 
   public LinkedList<Request> getQueue () {
+    checkEmptyness("Ninguém aguardando para subir no elevador");
+
     return requests;
   }
 
@@ -17,14 +21,24 @@ public class Floor
     return requests.size();
   }
 
-  public Request personIntoElevator () {
-    return requests.poll();
+  public Request runQueue () {
+    checkEmptyness("Ninguém aguardando para subir no elevador");
+
+    return requests.remove();
   }
 
-  public Floor (int floorNumber) {
-    if (floorNumber < 0)
-      throw new NegativeQuantityException("Quantidade de andares negativa");
+  public Floor () {
 
-    this.floorNumber = floorNumber;
   }
+
+  public Floor (LinkedList<Request> reqs) {
+    requests = reqs;
+  }
+
+  public Floor (Request... reqs) {
+    for (Request req : reqs) {
+      requests.add(req);
+    }
+  }
+
 }

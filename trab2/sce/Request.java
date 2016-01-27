@@ -1,17 +1,17 @@
 public class Request
 {
   private int id; //identificador unico da requisicao
-  private Floor destinationFloor;
+  private int destinationFloor;
 
   public int getId () {
     return id;
   }
 
-  public Floor getDestino () {
+  public int getDestination () {
     return destinationFloor;
   }
 
-  public Requisicao (int id, Floor destination) {
+  public Request (int id, int destination) {
     destinationFloor = destination;
     this.id = id;
   }
