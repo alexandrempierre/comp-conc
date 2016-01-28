@@ -1,0 +1,24 @@
+Atividade 1)
+
+* O programa escrito imprime uma mensagem caso o MPI seja inicializado com
+sucesso, nessa mensagem está inclusa a quantidade de argumentos passados para a
+linha de comado (argc)
+
+* Depois disso o programa imprime cada um dos argumentos (argv) na ordem
+inversa a que foram passados para a linha de comando
+
+* Não há nada limitando a execução do programa a algum processo específico então
+tudo o que é feito, é feito por todos os processos igualmente, ou seja, tudo o
+que foi descrito anteriormente vai ser replicado pelo número N de processos
+passados para mpirun -np N
+
+Atividade 2)
+
+* O programa obtém a quantidade de processos criados no mpirun e o número de
+cada processo e imprime na saída padrão
+
+* Como já foi mostrado na disciplina, a ordem em que as threads (e agora os
+processos) são executadas não tem como ser prevista (a não ser que seja
+controlada através de mecanismos de sincronização)
+
+Atividade 3)
