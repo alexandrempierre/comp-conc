@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv) {
   int numtasks, rank, dest, source, ret, tag = 100;
-  char inmsg, outmsg; 
+  char inmsg, outmsg;
 
   ret = MPI_Init(&argc, &argv);
   if (ret == MPI_SUCCESS){
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
        printf("%d: Enviando caractere %c para proc %d\n", rank, outmsg, dest);
        ret = MPI_Send(&outmsg, 1, MPI_CHAR, dest, tag, MPI_COMM_WORLD);
      } else if (rank == 1) {
-     //} else { //todos os outros processos ficarao esperando a mensagem do processo 0, mas apenas o processo 1 a recebera
+    //  } else { //todos os outros processos ficarao esperando a mensagem do processo 0, mas apenas o processo 1 a recebera
        source = 0;
        ret = MPI_Recv(&inmsg, 1, MPI_CHAR, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
        printf("%d: Recebi o caractere %c do proc %d\n", rank, inmsg, source);

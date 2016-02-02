@@ -22,3 +22,16 @@ processos) são executadas não tem como ser prevista (a não ser que seja
 controlada através de mecanismos de sincronização)
 
 Atividade 3)
+
+* O programa imprime na saída padrão uma mensagem caso o MPI seja inicializado
+corretamente, caso contrário a execução do programa acaba
+
+* O primeiro processo a ser criado vai enviar uma mensagem para o segundo
+processo a ser criado com o caractere 'x'
+
+Atividade 4)
+
+* O primeiro processo a ser criado envia a mensagem "Hello World" para todos os
+outros processos
+
+Atividade 5)
