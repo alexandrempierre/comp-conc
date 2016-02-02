@@ -35,3 +35,7 @@ Atividade 4)
 outros processos
 
 Atividade 5)
+
+Com os parâmetros de entrada: 0 1000 100000000
+O programa trap.c levou 2.08527 s para executar
+Enquanto o mpi_trap.c com 2 processos e os mesmos parâmetros levou 1.57776 s

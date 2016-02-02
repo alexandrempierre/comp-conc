@@ -74,12 +74,12 @@ int main(int argc, char* argv[]) {
    /* Add up the integrals calculated by each process */
    if (my_rank != 0) {
 //!!!...completar (enviar resultado para o processo 0)!!!
-    MPI_Send(local_int, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
+    MPI_Send(&local_int, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
    } else {
       total_int = local_int;
       for (source = 1; source < comm_sz; source++) {
 //!!!...completar (receber resultado dos demais processos)!!!
-          MPI_Send(local_int, 1, MPI_DOUBLE, 0, 99, MPI_COMM_WORLD);
+          MPI_Recv((void *) &local_int, 1, MPI_DOUBLE, source, 99, MPI_COMM_WORLD, NULL);
           total_int += local_int;
       }
    }
