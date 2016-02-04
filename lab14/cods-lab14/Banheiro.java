@@ -1,6 +1,6 @@
 /* Disciplina: Computacao Concorrente */
 /* Prof.: Silvana Rossetto */
-/* Lab 13: Banheiro unissex usando monitores (sem starvation) */
+/* Lab 14: Banheiro unissex usando monitores (sem starvation) */
 
 /* completar trechos com ... */
 /* -------------------------------------------------------------------*/
@@ -8,52 +8,40 @@
 // Monitor
 class BanheiroUni {
   //declarar atributos do monitor
-  int homensB, mulheresB;
+  ...
 
   // Construtor
-  BanheiroUni() {
+  BanheiroUni() { 
     //inicializar os atributos do monitor
-    homensB = 0;
-    mulheresB = 0;
-  }
-
+    ...
+  } 
+  
   // Entrada para mulheres
   public synchronized void EntraMulher (int id) {
-    try {
-      while (homensB > 0) wait();
-
-      mulheresB++;
-
-      System.out.println ("M[" + id + "]: entrou, total de " + mulheresB + " mulheres no banheiro");
-      notifyAll();
+    try { 
+      ...
+      System.out.println ("M[" + id + "]: entrou, total de " + ??? + " mulheres no banheiro");
     } catch (InterruptedException e) { }
   }
-
+  
   // Saida para mulheres
   public synchronized void SaiMulher (int id) {
-      mulheresB--;
-
-      System.out.println ("M[" + id + "]: saiu, restam " + mulheresB + " mulheres no banheiro");
-      notifyAll();
+      ...
+      System.out.println ("M[" + id + "]: saiu, restam " + ??? + " mulheres no banheiro");
   }
-
+  
   // Entrada para homens
   public synchronized void EntraHomem (int id) {
-    try {
-       while (mulheresB > 0) wait();
-
-       homensB++;
-
-       System.out.println ("H[" + id + "]: entrou, total de " + homensB + " homens no banheiro");
-       notifyAll();
+    try { 
+       ...
+       System.out.println ("H[" + id + "]: entrou, total de " + ??? + " homens no banheiro");
     } catch (InterruptedException e) { }
   }
-
+  
   // Saida para homens
   public synchronized void SaiHomem (int id) {
-       homensB--;
-       System.out.println ("H[" + id + "]: saiu, restam " + homensB + " homens no banheiro");
-       notifyAll();
+       ...
+       System.out.println ("H[" + id + "]: saiu, restam " + ??? + " homens no banheiro");
   }
 }
 
@@ -79,7 +67,7 @@ class Mulher extends Thread {
         this.b.EntraMulher(this.id);
         for (i=0; i<100000000; i++) {j=j/2;} //...loop bobo para simbolizar o tempo no banheiro
         this.b.SaiMulher(this.id);
-        sleep(this.delay);
+        sleep(this.delay); 
       }
     } catch (InterruptedException e) { return; }
   }
@@ -104,9 +92,9 @@ class Homem extends Thread {
     double j=777777777.7, i;
     try {
       for (;;) {
-        this.b.EntraHomem(this.id);
+        this.b.EntraHomem(this.id); 
         for (i=0; i<100000000; i++) {j=j/2;} //...loop bobo para simbolizar o tempo no banheiro
-        this.b.SaiHomem(this.id);
+        this.b.SaiHomem(this.id); 
         sleep(this.delay);
       }
     } catch (InterruptedException e) { return; }
@@ -116,8 +104,8 @@ class Homem extends Thread {
 //--------------------------------------------------------
 // Classe principal
 class Banheiro {
-  static final int M = 10;
-  static final int H = 11;
+  static final int M = 8;
+  static final int H = 7;
 
   public static void main (String[] args) {
     int i;
@@ -127,11 +115,11 @@ class Banheiro {
 
     for (i=0; i<M; i++) {
        m[i] = new Mulher(i+1, (i+1)*500, b);
-       m[i].start();
+       m[i].start(); 
     }
     for (i=0; i<H; i++) {
        h[i] = new Homem(i+1, (i+1)*500, b);
-       h[i].start();
+       h[i].start(); 
     }
   }
 }

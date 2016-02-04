@@ -1,6 +1,6 @@
 /* Disciplina: Computacao Concorrente */
 /* Prof.: Silvana Rossetto */
-/* Laboratório: 13 */
+/* Laboratório: 14 */
 /* Codigo: Produtor/consumidor em Java */
 /* -------------------------------------------------------------------*/
 
@@ -23,25 +23,23 @@ class Buffer {
       buffer[in] = item;
       in = (in + 1) % N;
       count++;
-      notify();
     } catch (InterruptedException e) { }
+
+    notifyAll();
   }
 
   // Remove um item
-  public synchronized int[] Remove () {
-   int aux[] = new int[N];
+  public synchronized int Remove () {
+   int aux;
    try {
-     while (count < N) wait();
-     count = 0;
+     while (count == 0) wait();
 
-     for (int i = 0; i < N; i++) aux[i] = buffer[i];
-      // aux = buffer[out];
-      // System.out.println("Item " + aux + " removido da posição " + out);
-      // out = (out + 1) % N;
-      // count--;
-      System.out.println("Buffer consumido");
-      notify();
-    } catch (InterruptedException e) { return null; }
+     aux = buffer[out]
+     out = (out + 1) % N;
+     count--;
+    } catch (InterruptedException e) { return -1;}
+
+    notifyAll();
 
     return aux;
   }
@@ -63,13 +61,10 @@ class Consumidor extends Thread {
 
   // Método executado pela thread
   public void run () {
-    System.out.println("Consumidor " + id + " rodando");
-
-    int item[];
+    int item;
     try {
       for (;;) {
         item = this.buffer.Remove();
-        System.out.println("Consumidor " + id + " removeu");
         sleep(this.delay); //...simula o tempo para fazer algo com o item retirado
       }
     } catch (InterruptedException e) { return; }
@@ -92,12 +87,9 @@ class Produtor extends Thread {
 
   // Método executado pelo thread
   public void run () {
-    System.out.println("Produtor " + id + " rodando");
-
     try {
       for (;;) {
         this.buffer.Insere(this.id); //simplificacao: insere o proprio ID
-        System.out.println(id + " Inserido no Buffer");
         sleep(this.delay);
       }
     } catch (InterruptedException e) { return; }
@@ -113,26 +105,16 @@ class PC {
   public static void main (String[] args) {
     int i;
     Buffer buffer = new Buffer();      // Monitor
-    System.out.println("Buffer de tamanho " + buffer.N + " instanciado");
-
     Consumidor[] cons = new Consumidor[C];   // Consumidores
-    System.out.println("Vetor de Consumidores inicializado");
-
     Produtor[] prod = new Produtor[P];       // Produtores
-    System.out.println("Vetor de Produtores inicializado");
-
 
     for (i=0; i<C; i++) {
        cons[i] = new Consumidor(i+1, 1000, buffer);
-       System.out.println("Consumidor " + (i + 1) + " criado");
        cons[i].start();
-       System.out.println("Consumidor " + (i + 1) + " iniciado");
     }
     for (i=0; i<P; i++) {
        prod[i] = new Produtor(i+1, 1000, buffer);
-       System.out.println("Produtor " + (i + 1) + " criado");
        prod[i].start();
-       System.out.println("Produtor " + (i + 1) + " iniciado");
     }
   }
 }
