@@ -1,0 +1,6 @@
+N: 5	M: 5	C: 6
+Elevador 0 - Andar atual: 0
+Elevador 1 - Andar atual: 4
+Elevador 2 - Andar atual: 5
+Elevador 3 - Andar atual: 1
+Elevador 4 - Andar atual: 0
